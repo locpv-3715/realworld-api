@@ -51,7 +51,7 @@ A fully-featured **Conduit** RealWorld backend API built with **Go**, **Gin**, *
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/realworld-api.git
+git https://github.com/locpv-3715/realworld-api.git
 cd realworld-api
 ```
 
