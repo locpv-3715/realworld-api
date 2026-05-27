@@ -1,0 +1,889 @@
+basePath: /
+definitions:
+  dto.ArticleRes:
+    properties:
+      article:
+        properties:
+          author:
+            properties:
+              bio:
+                type: string
+              following:
+                type: boolean
+              image:
+                type: string
+              username:
+                type: string
+            type: object
+          body:
+            type: string
+                    description: Delete article by slug (author only)
+          createdAt:
+            type: string
+          description:
+            type: string
+          favorited:
+            type: boolean
+          favoritesCount:
+            type: integer
+          slug:
+            type: string
+          tagList:
+            items:
+              type: string
+            type: array
+          title:
+            type: string
+          updatedAt:
+            type: string
+        type: object
+    type: object
+  dto.CommentReq:
+    properties:
+      comment:
+        properties:
+          body:
+            type: string
+                    summary: Delete article
+        - body
+        type: object
+    type: object
+  dto.CommentRes:
+    properties:
+      comment:
+        properties:
+          author:
+            properties:
+              bio:
+                type: string
+              following:
+                type: boolean
+              image:
+                type: string
+              username:
+                type: string
+            type: object
+          body:
+            type: string
+          createdAt:
+            type: string
+          id:
+            type: integer
+                    summary: Get article details
+            type: string
+        type: object
+    type: object
+  dto.CreateArticleReq:
+                    description: Update article by slug (author only)
+    properties:
+      article:
+        properties:
+          body:
+            type: string
+          description:
+            type: string
+          tagList:
+            items:
+              type: string
+            type: array
+          title:
+            type: string
+        required:
+        - body
+        - description
+        - title
+        type: object
+    type: object
+  dto.LoginReq:
+    properties:
+      user:
+        properties:
+          email:
+            type: string
+          password:
+            type: string
+        required:
+        - email
+        - password
+        type: object
+    type: object
+  dto.MultipleArticlesRes:
+    properties:
+      articles:
+        items: {}
+                    summary: Update article
+      articlesCount:
+        comments:
+          description: Use interface{} to flexibly map the list
+          items: {}
+          type: array
+        type: integer
+        - description: Get list of articles with filters (authentication optional)
+    type: object
+        - description: Filter by tag
+  dto.MultipleCommentsRes:
+        - description: Filter by author
+    properties:
+        - description: Filter by favorited user
+      comments:
+        - description: Number of results (default 20)        description: Use interface{} to flexibly map the list
+        - description: Offset (default 0)
+        items: {}
+        description: Create a new article (authentication required)
+        type: array
+        - description: Article content
+    type: object
+        summary: Create new article
+  dto.ProfileRes:
+        description: Delete article by slug (author only)
+                    summary: Get comments
+      profile:
+        description: Get article details by slug (authentication optional)
+        properties:
+        summary: Get article details
+          bio:
+        description: Update article by slug (author only)
+            type: string
+        summary: Update article
+          following:
+        - description: Content to update
+            type: boolean
+        description: Get all comments for an article (authentication optional)
+          image:
+        summary: Get comments
+            type: string
+        description: Add comment to article by slug
+          username:
+        summary: Add comment
+            type: string
+        - description: Comment content
+        type: object
+        description: Delete comment by ID in article
+    type: object
+        summary: Delete comment
+  dto.RegisterReq:
+        description: Add article to favorites
+    properties:
+        summary: Favorite article
+      user:
+        description: Remove article from favorites
+        properties:
+        summary: Unfavorite article
+          email:
+        description: Get profile by username (authentication optional)
+            type: string
+        summary: Get user profile
+          password:
+        description: Follow user by username
+            minLength: 6
+        description: Unfollow user by username
+                    summary: Add comment
+        summary: Get list of tags
+          username:
+        summary: Get current user info
+            type: string
+        description: Update current user info
+        required:
+        summary: Update user info
+        - email
+        description: Create a new user account
+        - password
+        - username
+        type: object
+    type: object
+  dto.UpdateArticleReq:
+    properties:
+      article:
+        properties:
+          body:
+            type: string
+          description:
+            type: string
+          title:
+            type: string
+        type: object
+    type: object
+  dto.UpdateUserReq:
+    properties:
+      user:
+        properties:
+          bio:
+            type: string
+          email:
+            type: string
+          image:
+            type: string
+          password:
+                    summary: Delete comment
+          username:
+            type: string
+        type: object
+    type: object
+  dto.UserRes:
+    properties:
+      user:
+        properties:
+          bio:
+            type: string
+          email:
+            type: string
+          image:
+            type: string
+          token:
+            type: string
+          username:
+            type: string
+        type: object
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@realworld.io
+    name: API Support
+  description: Conduit RealWorld API - A social blogging platform built with Go and
+    Gin
+  termsOfService: http://swagger.io/terms/
+  title: RealWorld API
+  version: "1.0"
+paths:
+  /api/articles:
+    get:
+      consumes:
+      - application/json
+      description: Get list of articles with filters (authentication optional)
+      parameters:
+      - description: Filter by tag
+        in: query
+        name: tag
+        type: string
+      - description: Filter by author
+        in: query
+        name: author
+        type: string
+      - description: Filter by favorited user
+        in: query
+        name: favorited
+        type: string
+      - description: Number of results (default 20)
+        in: query
+        name: limit
+        type: integer
+      - description: Offset (default 0)
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+                    summary: Get user profile
+          schema:
+            $ref: '#/definitions/dto.MultipleArticlesRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get articles
+      tags:
+      - articles
+    post:
+      consumes:
+      - application/json
+      description: Create a new article (authentication required)
+      parameters:
+      - description: Article content
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateArticleReq'
+      produces:
+                    summary: Get current user info
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.ArticleRes'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "422":
+          description: Unprocessable Entity
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create new article
+      tags:
+      - articles
+  /api/articles/{slug}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete article by slug (author only)
+      parameters:
+      - description: Article slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete article
+      tags:
+      - articles
+    get:
+      consumes:
+      - application/json
+      description: Get article details by slug (authentication optional)
+      parameters:
+      - description: Article slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ArticleRes'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get article details
+      tags:
+      - articles
+    put:
+      consumes:
+      - application/json
+      description: Update article by slug (author only)
+      parameters:
+      - description: Article slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      - description: Content to update
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateArticleReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ArticleRes'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "422":
+          description: Unprocessable Entity
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update article
+      tags:
+      - articles
+  /api/articles/{slug}/comments:
+    get:
+      consumes:
+      - application/json
+      description: Get all comments for an article (authentication optional)
+      parameters:
+      - description: Article slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MultipleCommentsRes'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get comments
+      tags:
+      - comments
+    post:
+      consumes:
+      - application/json
+      description: Add comment to article by slug
+      parameters:
+      - description: Article slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      - description: Comment content
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CommentReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.CommentRes'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "422":
+          description: Unprocessable Entity
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Add comment
+      tags:
+      - comments
+  /api/articles/{slug}/comments/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete comment by ID in article
+      parameters:
+      - description: Article slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete comment
+      tags:
+      - comments
+  /api/articles/{slug}/favorite:
+    delete:
+      consumes:
+      - application/json
+      description: Remove article from favorites
+      parameters:
+      - description: Article slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ArticleRes'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Unfavorite article
+      tags:
+      - favorites
+    post:
+      consumes:
+      - application/json
+      description: Add article to favorites
+      parameters:
+      - description: Article slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ArticleRes'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Favorite article
+      tags:
+      - favorites
+  /api/articles/feed:
+    get:
+      consumes:
+      - application/json
+      description: Get articles from followed users
+      parameters:
+      - description: Number of results (default 20)
+        in: query
+        name: limit
+        type: integer
+      - description: Offset (default 0)
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MultipleArticlesRes'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get article feed
+      tags:
+      - articles
+  /api/profiles/{username}:
+    get:
+      consumes:
+      - application/json
+      description: Get profile by username (authentication optional)
+      parameters:
+      - description: Username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ProfileRes'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get user profile
+      tags:
+      - profiles
+  /api/profiles/{username}/follow:
+    delete:
+      consumes:
+      - application/json
+      description: Unfollow user by username
+      parameters:
+      - description: Username to unfollow
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ProfileRes'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Unfollow a user
+      tags:
+      - profiles
+    post:
+      consumes:
+      - application/json
+      description: Follow user by username
+      parameters:
+      - description: Username to follow
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ProfileRes'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Follow a user
+      tags:
+      - profiles
+  /api/tags:
+    get:
+      consumes:
+      - application/json
+      description: Return the list of available tags
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get list of tags
+      tags:
+      - tags
+  /api/user:
+    get:
+      consumes:
+      - application/json
+      description: Return current authenticated user info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserRes'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get current user info
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: Update current user info
+      parameters:
+      - description: Updated information
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserRes'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "422":
+          description: Unprocessable Entity
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update user info
+      tags:
+      - user
+  /api/users:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user account
+      parameters:
+      - description: Registration information
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.UserRes'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "422":
+          description: Unprocessable Entity
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register new account
+      tags:
+      - users
+  /api/users/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and return JWT token
+      parameters:
+      - description: Login information
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserRes'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: User login
+      tags:
+      - users
+securityDefinitions:
+  BearerAuth:
+    description: Type "Token {your_jwt_token}" to authenticate
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

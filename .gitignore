@@ -1,0 +1,16 @@
+
+/tmp/
+/bin/
+realworld-api
+*.exe
+*.test
+
+.env
+
+coverage.out
+*.out
+
+.DS_Store
+
+
+/db_data/
